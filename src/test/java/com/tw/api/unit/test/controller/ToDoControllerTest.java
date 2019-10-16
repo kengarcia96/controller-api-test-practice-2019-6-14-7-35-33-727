@@ -116,5 +116,18 @@ public class ToDoControllerTest {
 
     }
 
+    @Test
+    void patchTodo() throws Exception {
+        //when
+        Todo todo1 = new Todo(1, "doTestCode", false, 1);
+        todoRepository.add(todo1);
+
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo1));
+        ResultActions result = mvc.perform(patch("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo1)));
+
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
 
 }
