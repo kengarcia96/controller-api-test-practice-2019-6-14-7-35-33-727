@@ -1,20 +1,20 @@
 package com.tw.api.unit.test.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tw.api.unit.test.domain.todo.Todo;
 import com.tw.api.unit.test.domain.todo.TodoRepository;
-import com.tw.api.unit.test.services.ShowService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,17 +31,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TodoController.class)
 @ActiveProfiles(profiles = "test")
-
 public class ToDoControllerTest {
 
-//    @Autowired
-//    private TodoController todoController;
+    @Autowired
+    private TodoController todoController;
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private TodoRepository todoRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void getAll() throws Exception {
@@ -77,6 +80,23 @@ public class ToDoControllerTest {
         ResultActions result = mvc.perform(get("/todos/1"));
         //then
         result.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("doTestCode")))
+                .andExpect(jsonPath("$.completed", is(false)))
+                .andExpect(jsonPath("$.order", is(1)));
+
+    }
+
+    @Test
+    void saveTodo() throws Exception {
+        //when
+        Todo todo1 = new Todo(1, "doTestCode", false, 1);
+
+        ResultActions result = mvc.perform(post("/todos").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo1)));
+
+        //then
+        result.andExpect(status().isCreated())
                 .andDo(print())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("doTestCode")))
