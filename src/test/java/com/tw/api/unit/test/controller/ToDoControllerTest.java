@@ -22,8 +22,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,6 +101,18 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.title", is("doTestCode")))
                 .andExpect(jsonPath("$.completed", is(false)))
                 .andExpect(jsonPath("$.order", is(1)));
+
+    }
+
+    @Test
+    void deleteTodo() throws Exception {
+        //when
+        Todo todo1 = new Todo(1, "doTestCode", false, 1);
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo1));
+        ResultActions result = mvc.perform(delete("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo1)));
+
+        //then
+        result.andExpect(status().isOk()).andDo(print());
 
     }
 
