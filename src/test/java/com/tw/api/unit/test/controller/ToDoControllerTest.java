@@ -68,11 +68,7 @@ public class ToDoControllerTest {
     @Test
     void should_get_todo_with_id_1() throws Exception {
         //given
-        List<Todo> todoList = new ArrayList<>();
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
-        Todo todo2 = new Todo(2, "eatmyLunch", false, 2);
-        todoList.add(todo1);
-        todoList.add(todo2);
 
         when(todoRepository.findById(todo1.getId())).thenReturn(Optional.of(todo1));
         //when
@@ -89,7 +85,7 @@ public class ToDoControllerTest {
 
     @Test
     void should_add_a_todo() throws Exception {
-        //when
+        //given
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
 
         ResultActions result = mvc.perform(post("/todos").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo1)));
@@ -121,12 +117,19 @@ public class ToDoControllerTest {
         //when
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
         todoRepository.add(todo1);
+        Todo todo2 = new Todo(1, "finishTestCode", false, 1);
 
         when(todoRepository.findById(1L)).thenReturn(Optional.of(todo1));
-        ResultActions result = mvc.perform(patch("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo1)));
+        ResultActions result = mvc.perform(patch("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo2)));
 
         //then
-        result.andExpect(status().isOk()).andDo(print());
+
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("finishTestCode")))
+                .andExpect(jsonPath("$.completed", is(false)))
+                .andExpect(jsonPath("$.order", is(1)));
     }
 
 
