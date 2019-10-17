@@ -148,5 +148,14 @@ public class ToDoControllerTest {
                 .andExpect(jsonPath("$.order", is(1)));
     }
 
+    @Test
+    void should_return_not_found_in_update_to_do() throws Exception {
+        //when
+        Todo updateToDo = new Todo(2, "TestToDo", false, 1);
+        ResultActions result = mvc.perform(patch("/todos/2").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateToDo)));
+
+        result.andExpect(status().isNotFound()).andDo(print());
+    }
+
 
 }
