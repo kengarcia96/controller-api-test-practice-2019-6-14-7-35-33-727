@@ -113,6 +113,22 @@ public class ToDoControllerTest {
     }
 
     @Test
+    void should_return_not_found_when_delete_id_is_not_exist() throws Exception {
+        //when
+        Todo todo1 = new Todo(1, "doTestCode", false, 1);
+        todoRepository.add(todo1);
+
+        Todo todo2 = new Todo(2, "doTestCode", false, 1);
+
+        when(todoRepository.findById(2L)).thenReturn(Optional.of(todo2));
+        ResultActions result = mvc.perform(delete("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo2)));
+
+        //then
+        result.andExpect(status().isNotFound()).andDo(print());
+
+    }
+
+    @Test
     void should_update_a_todo() throws Exception {
         //when
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
