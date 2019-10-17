@@ -157,5 +157,16 @@ public class ToDoControllerTest {
         result.andExpect(status().isNotFound()).andDo(print());
     }
 
+    @Test
+    void should_return_bad_request_when_update_to_do_is_null() throws Exception {
+        //when
+        Todo updateToDo = new Todo(1, "TestToDo", false, 1);
+
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(updateToDo));
+        ResultActions result = mvc.perform(patch("/todos/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(null)));
+
+        result.andExpect(status().isBadRequest()).andDo(print());
+    }
+
 
 }
