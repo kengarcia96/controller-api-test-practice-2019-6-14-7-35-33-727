@@ -45,7 +45,7 @@ public class ToDoControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAll() throws Exception {
+    void should_get_all_todo() throws Exception {
         //given
         List<Todo> todoList = new ArrayList<>();
         Todo todo = new Todo(1, "mytestTodo", false, 2);
@@ -66,7 +66,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    void getTodo() throws Exception {
+    void should_get_todo_with_id_1() throws Exception {
         //given
         List<Todo> todoList = new ArrayList<>();
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
@@ -88,7 +88,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    void saveTodo() throws Exception {
+    void should_add_a_todo() throws Exception {
         //when
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
 
@@ -105,7 +105,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    void deleteTodo() throws Exception {
+    void should_delete_a_todo() throws Exception {
         //when
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
         when(todoRepository.findById(1L)).thenReturn(Optional.of(todo1));
@@ -117,7 +117,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    void patchTodo() throws Exception {
+    void should_update_a_todo() throws Exception {
         //when
         Todo todo1 = new Todo(1, "doTestCode", false, 1);
         todoRepository.add(todo1);
